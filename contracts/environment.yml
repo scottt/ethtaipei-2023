@@ -1,0 +1,6 @@
+name: hardhat-template
+channels:
+  - conda-forge
+dependencies:
+  - nodejs=16.6.1
+  - yarn=1.22.18

@@ -1,0 +1,66 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+  <title>Wallet: ETHTaipei 2023</title>
+  <link rel="stylesheet" href="app.css"></script>
+  <script src="app-helper.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.js"></script>
+  <script>
+    const formatError = (e) => {
+      return `${e.name}: ${e.message}`
+    }
+
+    const onLoad = (async () => {
+      const appHelper = new window['AppHelper'](window);
+      let app;
+      try {
+        app = await appHelper.getApp();
+      } catch(err) {
+        debugger;
+        const messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = '<p>' + formatError(err) + '</p>' + d.innerHTML;
+        return;
+      };
+      window['app'] = app;
+      app.onLoad();
+    });
+    window.addEventListener('DOMContentLoaded', function () {
+      onLoad();
+    });
+  </script>
+</head>
+<body>
+  <div id="message"></div>
+  <div id="page-private-key" style="display: none;">
+  </div>
+  <div id="page-to-address-scan" style="display: none;">
+    <canvas id="to-address-scan-canvas"></canvas>
+  </div>
+  <div id="page-app" style="display: none;">
+    <div id="fixed-content">
+    <p>Your Address (Linea Goerli):</p><p id="address"></p>
+    <div id="qrcode-container">
+      <canvas id="qrcode"></canvas>
+    </div>
+    <p>Token address: </p><p>0x647f45605b9EaE4DD8A452dC765fDB6B63EB218F</p>
+    <p>
+      <button id="mint" type="button">
+        <span>Mint</span>
+      </button>
+    </p>
+    <p>Balance: <span id="balance"></span></p>
+    <p>Amount to send:</p>
+    <input type="number" id="value" type="text">
+    <p>To address:</p>
+    <span><input id="to-address" type="text" value=""><span id="to-address-scan-click"><img id="to-address-scan" src="qr_code_scanner-24px.svg"> <b>Scan</b></span></span>
+    <p>
+      <button id="submit" type="button" disabled>
+        <span>Send</span>
+      </button>
+    </p>
+  </div>
+    <div id="transactions">
+    </div>
+  </div>
+</body>
+</html>

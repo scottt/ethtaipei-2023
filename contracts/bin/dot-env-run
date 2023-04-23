@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import subprocess
+import shlex
+import argparse
+
+def shlex_rhs_val(rhs):
+    "For `X=''`, `rhs` is right hand side of `=`, which is "''". shlex_rhs_val("''") -> '' (empty string)"
+    if rhs == '':
+        return ''
+    fs = shlex.split(rhs)
+    # print('shlex_rhs_val: fs: %r' % (fs,))
+    return fs[0]
+
+def env_from_fileobj(env, file_obj):
+    for line in file_obj.readlines():
+        if line.startswith('#'):
+            continue
+        # print('line: %r' % (line,))
+        line = line.strip()
+        if not line:
+            continue
+        fs = line.split('=', 1)
+        env[fs[0]] = shlex_rhs_val(fs[1])
+    return env
+
+def program_name():
+    return os.path.basename(sys.argv[0])
+
+main_function_map = {}
+
+def main_function(func):
+    global main_function_map
+    main_function_map[func.__name__.replace('_','-')] = func
+    return func
+
+@main_function
+def dot_env_run(args):
+    def print_usage_exit():
+        sys.stderr.write('usage: %s DOT_FILE CMD [...ARGS]\n' % (program_name(),))
+        sys.exit(2)
+    try:
+        (dot_filename, cmd) = (args[0], args[1:])
+    except IndexError:
+        print_usage_exit()
+    env = os.environ.copy()
+    with open(dot_filename) as f:
+        env = env_from_fileobj(env, f)
+    subprocess.run(cmd, env=env)
+
+@main_function
+def dot_env_init_file_gen(args):
+    p = argparse.ArgumentParser()
+    p.add_argument('-f', '--force', action='store_true', help='do not complain if ENV_FILE does not exist')
+    p.add_argument('env_filename', help='ENV_FILE')
+    p.add_argument('out_init_filename', help='OUT_SHELL_INIT_FILE')
+    args = p.parse_args(args)
+
+    try:
+        with open(args.env_filename) as f:
+            env = env_from_fileobj({}, f)
+    except FileNotFoundError as e:
+        if args.force:
+            return
+        raise e
+    with open(args.out_init_filename, 'w') as f:
+        for k, v in env.items():
+            if v == '':
+                v = "''"
+            f.write('export %s=\'%s\'\n' % (k, v))
+
+def main_function_dispatch(name, args):
+    try:
+        f = main_function_map[name]
+    except KeyError:
+        sys.stderr.write('%s is not a valid command name\n' % (name,))
+        sys.exit(2)
+    f(args)
+
+if __name__ == '__main__':
+    main_function_dispatch(program_name(), sys.argv[1:])

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# https://hardhat.org/guides/typescript
+yarn add -D ts-node typescript \
+	@types/node @types/mocha @types/chai
+	@nomicfoundation/hardhat-toolbox \
+		@nomicfoundation/hardhat-network-helpers \
+		@nomicfoundation/hardhat-chai-matchers \
+		@nomiclabs/hardhat-ethers \
+		@nomiclabs/hardhat-etherscan \
+		chai ethers hardhat-gas-reporter solidity-coverage @typechain/hardhat typechain @typechain/ethers-v5 @ethersproject/abi @ethersproject/providers \
+	@nomiclabs/solhint \
+	@openzeppelin/contracts-upgradeable @openzeppelin/hardhat-upgrades \

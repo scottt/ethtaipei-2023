@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export TOKEN_ADDR='0x647f45605b9EaE4DD8A452dC765fDB6B63EB218F'
+export WALLET_ADDR='0x16AFf84806c3b717784070375e85f380cEc5FE54'
+hh run --network linea ./script/mint-test-usdc.ts

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+hh run --network linea ./script/deploy-test-usdc.ts
